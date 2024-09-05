@@ -9,6 +9,7 @@ import java.util.Date;
 
 /**
  * @TableName user
+ * @author ColaBlack
  */
 @TableName(value = "user")
 @Data
