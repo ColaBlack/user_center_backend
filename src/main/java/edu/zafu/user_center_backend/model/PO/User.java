@@ -15,9 +15,9 @@ import java.util.Date;
 @Data
 public class User implements Serializable {
     /**
-     *
+     *用户id
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
