@@ -17,4 +17,13 @@ public interface UserConstant {
      */
     String USER_LOGIN_STATE = "USER_LOGIN_STATE";
 
+    /**
+     * 最小账号长度
+     */
+    Integer MIN_ACCOUNT_LENGTH = 4;
+
+    /**
+     * 最小密码长度
+     */
+    Integer MIN_PASSWORD_LENGTH = 16;
 }

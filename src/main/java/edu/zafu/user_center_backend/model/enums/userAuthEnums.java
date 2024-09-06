@@ -20,11 +20,11 @@ public enum userAuthEnums {
     USER_AUTH_BAN(2, "ban"),
     USER_AUTH_ADMIN(3, "管理员");
 
-    private final Integer code;
+    private final Integer val;
     private final String desc;
 
-    userAuthEnums(Integer code, String desc) {
-        this.code = code;
+    userAuthEnums(Integer val, String desc) {
+        this.val = val;
         this.desc = desc;
     }
 }
