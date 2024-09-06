@@ -10,6 +10,10 @@ spring:
   session:
     # session 30 天过期
     timeout: 2592000
+    redis:
+      # Redis配置
+      namespace: user_center_backend:session
+      flush-mode: on_save
     # redis 连接信息
   data:
     redis:
@@ -17,6 +21,12 @@ spring:
       host: localhost
       port: 6379
       timeout: 5000
+      lettuce:
+        pool:
+          max-active: 8
+          max-wait: -1ms
+          max-idle: 8
+          min-idle: 0
 server:
   address: 0.0.0.0
   # 端口号1221
@@ -26,8 +36,7 @@ server:
     context-path: /api
     # cookie 30 天过期
     session:
-      cookie:
-        max-age: 2592000
+      timeout: 2592000
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
