@@ -6,12 +6,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import edu.zafu.user_center_backend.common.ErrorCode;
 import edu.zafu.user_center_backend.common.exception.ThrowUtils;
+import edu.zafu.user_center_backend.constant.CommonConstant;
 import edu.zafu.user_center_backend.constant.UserConstant;
 import edu.zafu.user_center_backend.mapper.UserMapper;
+import edu.zafu.user_center_backend.model.DTO.user.UserQueryRequest;
 import edu.zafu.user_center_backend.model.PO.User;
 import edu.zafu.user_center_backend.model.VO.UserVO;
 import edu.zafu.user_center_backend.model.enums.userAuthEnums;
 import edu.zafu.user_center_backend.service.UserService;
+import edu.zafu.user_center_backend.utils.SqlUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -177,6 +180,54 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return new ArrayList<>();
         }
         return userList.stream().map(this::getUserVO).collect(Collectors.toList());
+    }
+
+    @Override
+    public QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest) {
+        ThrowUtils.throwIf(userQueryRequest == null, ErrorCode.PARAMS_ERROR, "参数为空");
+        Long id = userQueryRequest.getId();
+        String username = userQueryRequest.getUsername();
+        String useraccount = userQueryRequest.getUseraccount();
+        Integer gender = userQueryRequest.getGender();
+        String email = userQueryRequest.getEmail();
+        Integer userstatus = userQueryRequest.getUserstatus();
+        String phone = userQueryRequest.getPhone();
+        String userprofile = userQueryRequest.getUserprofile();
+        int current = userQueryRequest.getCurrent();
+        int pageSize = userQueryRequest.getPageSize();
+        String sortField = userQueryRequest.getSortField();
+        String sortOrder = userQueryRequest.getSortOrder();
+        // 构造查询条件
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        if (id != null) {
+            queryWrapper.eq("id", id);
+        }
+        if (StringUtils.isNotBlank(username)) {
+            queryWrapper.like("username", username);
+        }
+        if (StringUtils.isNotBlank(useraccount)) {
+            queryWrapper.like("useraccount", useraccount);
+        }
+        if (gender != null) {
+            queryWrapper.eq("gender", gender);
+        }
+        if (StringUtils.isNotBlank(email)) {
+            queryWrapper.like("email", email);
+        }
+        if (userstatus != null) {
+            queryWrapper.eq("userstatus", userstatus);
+        }
+        if (StringUtils.isNotBlank(phone)) {
+            queryWrapper.like("phone", phone);
+        }
+        if (StringUtils.isNotBlank(userprofile)) {
+            queryWrapper.like("userprofile", userprofile);
+        }
+        // 排序
+        queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
+        // 分页
+        queryWrapper.last("LIMIT " + current + "," + pageSize);
+        return queryWrapper;
     }
 }
 

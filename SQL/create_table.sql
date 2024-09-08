@@ -17,5 +17,6 @@ CREATE TABLE IF NOT EXISTS user
     phone        VARCHAR(128)                       NULL COMMENT '电话',
     createTime   DATETIME DEFAULT CURRENT_TIMESTAMP NULL COMMENT '记录创建时间',
     updateTime   DATETIME DEFAULT CURRENT_TIMESTAMP null ON UPDATE CURRENT_TIMESTAMP COMMENT '记录更新时间',
-    isDelete     TINYINT  DEFAULT 0                 NOT NULL COMMENT '是否删除'
+    isDelete    TINYINT DEFAULT 0 NOT NULL COMMENT '是否删除',
+    userProfile TEXT              NULL COMMENT '用户简介'
 );

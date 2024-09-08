@@ -1,6 +1,8 @@
 package edu.zafu.user_center_backend.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
+import edu.zafu.user_center_backend.model.DTO.user.UserQueryRequest;
 import edu.zafu.user_center_backend.model.PO.User;
 import edu.zafu.user_center_backend.model.VO.UserVO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -83,4 +85,12 @@ public interface UserService extends IService<User> {
      * @return 脱敏后的用户信息列表
      */
     List<UserVO> getUserVO(List<User> userList);
+
+    /**
+     * 获取查询queryWrapper
+     *
+     * @param userQueryRequest 用户查询请求对象
+     * @return queryWrapper queryWrapper对象
+     */
+    QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest);
 }

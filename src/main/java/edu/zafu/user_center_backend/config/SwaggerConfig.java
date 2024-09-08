@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class SwaggerConfig {
- 
+
     @Bean
     public OpenAPI springShopOpenAPI() {
         return new OpenAPI()
@@ -27,5 +27,5 @@ public class SwaggerConfig {
                         //设置接口文档的许可证信息
                         .license(new License().name("Apache 2.0")));
     }
- 
+
 }
