@@ -53,14 +53,6 @@ public interface UserService extends IService<User> {
     User getLoginUser(HttpServletRequest request);
 
     /**
-     * 获取当前登录用户（允许未登录）
-     *
-     * @param request 请求对象
-     * @return 当前登录用户（允许未登录）
-     */
-    User getLoginUserPermitNull(HttpServletRequest request);
-
-    /**
      * 是否为管理员
      *
      * @param request 请求对象

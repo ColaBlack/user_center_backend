@@ -29,6 +29,14 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
+    /**
+     * 用户注册
+     *
+     * @param userAccount   用户账户
+     * @param userPassword  用户密码
+     * @param checkPassword 校验密码
+     * @return 新用户 id
+     */
     @Override
     public UserVO userRegister(String userAccount, String userPassword, String checkPassword) {
 //        校验信息
@@ -56,6 +64,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
     }
 
+    /**
+     * 用户登录
+     *
+     * @param userAccount  用户账户
+     * @param userPassword 用户密码
+     * @param request      请求对象
+     * @return 脱敏后的用户信息
+     */
     @Override
     public UserVO userLogin(String userAccount, String userPassword, HttpServletRequest request) {
 //        校验信息
@@ -71,39 +87,74 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = this.baseMapper.selectOne(queryWrapper);
         ThrowUtils.throwIf(user == null, ErrorCode.SYSTEM_ERROR, "用户不存在或密码错误");
         // 用户被禁用
-        ThrowUtils.throwIf(user.getUserstatus().equals(userAuthEnums.USER_AUTH_BAN.getVal()), ErrorCode.PARAMS_ERROR, "用户已被禁用");
-        //记录用户的登录态
-        request.getSession().setAttribute(UserConstant.USER_LOGIN_STATE, user);
+        ThrowUtils.throwIf(user.getUserstatus().equals(userAuthEnums.USER_AUTH_BAN.getVal()), ErrorCode.NO_AUTH_ERROR, "用户已被禁用");
+        // 登录成功，记录用户信息到 session
+        UserVO userVO = this.getUserVO(user);
+        request.getSession().setAttribute(UserConstant.USER_LOGIN_STATE, userVO);
         return this.getUserVO(user);
     }
 
+    /**
+     * 用户注销
+     *
+     * @param request 请求对象
+     * @return 是否成功注销
+     */
     @Override
     public boolean userLogout(HttpServletRequest request) {
-        return false;
+        ThrowUtils.throwIf(request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE) == null, ErrorCode.NOT_LOGIN_ERROR, "未登录");
+        request.getSession().removeAttribute(UserConstant.USER_LOGIN_STATE);
+        return true;
     }
 
+    /**
+     * 获取当前登录用户
+     *
+     * @param request 请求对象
+     * @return 当前登录用户
+     */
     @Override
     public User getLoginUser(HttpServletRequest request) {
-        return null;
+        Object attribute = request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
+        UserVO userVO = (UserVO) attribute;
+        if (userVO == null) {
+            return null;
+        }
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", userVO.getId());
+        return this.baseMapper.selectOne(queryWrapper);
     }
 
-    @Override
-    public User getLoginUserPermitNull(HttpServletRequest request) {
-        return null;
-    }
-
+    /**
+     * 是否为管理员
+     *
+     * @param request 请求对象
+     * @return 是否为管理员
+     */
     @Override
     public boolean isAdmin(HttpServletRequest request) {
         Object attribute = request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
-        User user = (User) attribute;
-        return isAdmin(user);
+        UserVO userVO = (UserVO) attribute;
+        return userVO != null && userVO.getUserstatus().equals(userAuthEnums.USER_AUTH_ADMIN.getVal());
     }
 
+    /**
+     * 是否为管理员
+     *
+     * @param user 用户对象
+     * @return 是否为管理员
+     */
     @Override
     public boolean isAdmin(User user) {
         return user != null && user.getUserstatus().equals(userAuthEnums.USER_AUTH_ADMIN.getVal());
     }
 
+    /**
+     * 获取脱敏的用户信息
+     *
+     * @param user 用户对象
+     * @return 脱敏后的用户信息
+     */
     @Override
     public UserVO getUserVO(User user) {
         if (user == null) {
@@ -114,6 +165,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userVO;
     }
 
+    /**
+     * 获取脱敏的用户信息
+     *
+     * @param userList 用户对象列表
+     * @return 脱敏后的用户信息列表
+     */
     @Override
     public List<UserVO> getUserVO(List<User> userList) {
         if (CollectionUtil.isEmpty(userList)) {
