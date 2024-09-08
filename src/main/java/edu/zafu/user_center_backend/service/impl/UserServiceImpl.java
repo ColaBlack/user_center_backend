@@ -117,7 +117,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return 当前登录用户
      */
     @Override
-    public User getLoginUser(HttpServletRequest request) {
+    public UserVO getLoginUser(HttpServletRequest request) {
         Object attribute = request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
         UserVO userVO = (UserVO) attribute;
         if (userVO == null) {
@@ -125,7 +125,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", userVO.getId());
-        return this.baseMapper.selectOne(queryWrapper);
+        User user = this.baseMapper.selectOne(queryWrapper);
+        return this.getUserVO(user);
     }
 
     /**
