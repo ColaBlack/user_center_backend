@@ -22,46 +22,32 @@ public class UserVO implements Serializable {
      * 用户id
      */
     @TableId(type = IdType.ASSIGN_ID)
-    private Long id;
+    private Long userId;
     /**
      * 用户昵称
      */
-    private String username;
+    private String userName;
     /**
      * 用户账号
      */
-    private String useraccount;
+    private String userAccount;
     /**
      * 用户头像
      */
-    private String avatar;
-    /**
-     * 性别
-     */
-    private Integer gender;
-    /**
-     * 邮箱
-     */
-    private String email;
+    private String userAvatar;
+
     /**
      * 状态 0-正常 1-vip 2-ban 3-管理员
      */
-    private Integer userstatus;
-    /**
-     * 电话
-     */
-    private String phone;
+    private Integer userRole;
 
-    public String tostring(UserVO userVO) {
-        return "LoginUserVO{" +
-                "id=" + userVO.getId() +
-                ", username='" + userVO.getUsername() + '\'' +
-                ", useraccount='" + userVO.getUseraccount() + '\'' +
-                ", avatar='" + userVO.getAvatar() + '\'' +
-                ", gender=" + userVO.getGender() +
-                ", email='" + userVO.getEmail() + '\'' +
-                ", userstatus=" + userVO.getUserstatus() +
-                ", phone='" + userVO.getPhone() + '\'' +
-                '}';
+    /**
+     * 用户简介
+     */
+    private String userProfile;
+
+    @Override
+    public String toString() {
+        return "UserVO{" + "userId=" + userId + ", userName='" + userName + '\'' + ", userAccount='" + userAccount + '\'' + ", userAvatar='" + userAvatar + '\'' + ", userRole=" + userRole + ", userProfile='" + userProfile + '\'' + '}';
     }
 }

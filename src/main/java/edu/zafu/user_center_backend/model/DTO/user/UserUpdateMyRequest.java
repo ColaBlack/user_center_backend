@@ -19,35 +19,20 @@ public class UserUpdateMyRequest implements Serializable {
     /**
      * 用户昵称
      */
-    private String username;
+    private String userNickname;
 
     /**
      * 用户头像
      */
-    private String avatar;
-
-    /**
-     * 性别
-     */
-    private Integer gender;
+    private String userAvatar;
 
     /**
      * 密码
      */
-    private String userpassword;
-
-    /**
-     * 邮箱
-     */
-    private String email;
-
-    /**
-     * 电话
-     */
-    private String phone;
+    private String userPassword;
 
     /**
      * 用户简介
      */
-    private String userprofile;
+    private String userProfile;
 }

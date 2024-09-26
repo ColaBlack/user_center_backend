@@ -59,8 +59,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             String encryptPassword = DigestUtils.md5DigestAsHex((UserConstant.SALT + userPassword).getBytes());
             // 插入数据
             User user = new User();
-            user.setUseraccount(userAccount);
-            user.setUserpassword(encryptPassword);
+            user.setUserAccount(userAccount);
+            user.setUserPassword(encryptPassword);
             boolean saveResult = this.save(user);
             ThrowUtils.throwIf(!saveResult, ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
             return this.getUserVO(user);
@@ -90,7 +90,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = this.baseMapper.selectOne(queryWrapper);
         ThrowUtils.throwIf(user == null, ErrorCode.SYSTEM_ERROR, "用户不存在或密码错误");
         // 用户被禁用
-        ThrowUtils.throwIf(user.getUserstatus().equals(userAuthEnums.USER_AUTH_BAN.getVal()), ErrorCode.NO_AUTH_ERROR, "用户已被禁用");
+        ThrowUtils.throwIf(user.getUserRole().equals(userAuthEnums.USER_AUTH_BAN.getVal()), ErrorCode.NO_AUTH_ERROR, "用户已被禁用");
         // 登录成功，记录用户信息到 session
         UserVO userVO = this.getUserVO(user);
         request.getSession().setAttribute(UserConstant.USER_LOGIN_STATE, userVO);
@@ -124,7 +124,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return null;
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", userVO.getId());
+        queryWrapper.eq("id", userVO.getUserId());
         User user = this.baseMapper.selectOne(queryWrapper);
         return this.getUserVO(user);
     }
@@ -139,18 +139,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public boolean isAdmin(HttpServletRequest request) {
         Object attribute = request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
         UserVO userVO = (UserVO) attribute;
-        return userVO != null && userVO.getUserstatus().equals(userAuthEnums.USER_AUTH_ADMIN.getVal());
-    }
-
-    /**
-     * 是否为管理员
-     *
-     * @param user 用户对象
-     * @return 是否为管理员
-     */
-    @Override
-    public boolean isAdmin(User user) {
-        return user != null && user.getUserstatus().equals(userAuthEnums.USER_AUTH_ADMIN.getVal());
+        return userVO == null || !userVO.getUserRole().equals(userAuthEnums.USER_AUTH_ADMIN.getVal());
     }
 
     /**
@@ -186,14 +175,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest) {
         ThrowUtils.throwIf(userQueryRequest == null, ErrorCode.PARAMS_ERROR, "参数为空");
-        Long id = userQueryRequest.getId();
-        String username = userQueryRequest.getUsername();
-        String useraccount = userQueryRequest.getUseraccount();
-        Integer gender = userQueryRequest.getGender();
-        String email = userQueryRequest.getEmail();
-        Integer userstatus = userQueryRequest.getUserstatus();
-        String phone = userQueryRequest.getPhone();
-        String userprofile = userQueryRequest.getUserprofile();
+        Long id = userQueryRequest.getUserId();
+        String username = userQueryRequest.getUserNickname();
+        String useraccount = userQueryRequest.getUserAccount();
+        Integer userstatus = userQueryRequest.getUserRole();
+        String userprofile = userQueryRequest.getUserProfile();
         int current = userQueryRequest.getCurrent();
         int pageSize = userQueryRequest.getPageSize();
         String sortField = userQueryRequest.getSortField();
@@ -209,17 +195,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (StringUtils.isNotBlank(useraccount)) {
             queryWrapper.like("useraccount", useraccount);
         }
-        if (gender != null) {
-            queryWrapper.eq("gender", gender);
-        }
-        if (StringUtils.isNotBlank(email)) {
-            queryWrapper.like("email", email);
-        }
         if (userstatus != null) {
             queryWrapper.eq("userstatus", userstatus);
-        }
-        if (StringUtils.isNotBlank(phone)) {
-            queryWrapper.like("phone", phone);
         }
         if (StringUtils.isNotBlank(userprofile)) {
             queryWrapper.like("userprofile", userprofile);

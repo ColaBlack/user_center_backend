@@ -23,40 +23,25 @@ public class UserQueryRequest extends PageRequest implements Serializable {
     /**
      * 用户id
      */
-    private Long id;
+    private Long userId;
 
     /**
      * 用户昵称
      */
-    private String username;
+    private String userNickname;
 
     /**
      * 用户账号
      */
-    private String useraccount;
-
-    /**
-     * 性别
-     */
-    private Integer gender;
-
-    /**
-     * 邮箱
-     */
-    private String email;
+    private String userAccount;
 
     /**
      * 状态 0-正常 1-vip 2-ban 3-管理员
      */
-    private Integer userstatus;
-
-    /**
-     * 电话
-     */
-    private String phone;
+    private Integer userRole;
 
     /**
      * 用户简介
      */
-    private String userprofile;
+    private String userProfile;
 }

@@ -111,16 +111,16 @@ public class UserController {
     @PostMapping("/add")
     public BaseResponse<Long> addUser(@RequestBody UserAddRequest userAddRequest, HttpServletRequest request) {
         ThrowUtils.throwIf(userAddRequest == null, ErrorCode.PARAMS_ERROR);
-        ThrowUtils.throwIf(!userService.isAdmin(request), ErrorCode.NO_AUTH_ERROR);
+        ThrowUtils.throwIf(userService.isAdmin(request), ErrorCode.NO_AUTH_ERROR);
         User user = new User();
         BeanUtils.copyProperties(userAddRequest, user);
         // 默认密码 12345678
         String defaultPassword = "12345678";
         String encryptPassword = DigestUtils.md5DigestAsHex((UserConstant.SALT + defaultPassword).getBytes());
-        user.setUserpassword(encryptPassword);
+        user.setUserPassword(encryptPassword);
         boolean result = userService.save(user);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
-        return ResultUtils.success(user.getId());
+        return ResultUtils.success(user.getUserId());
     }
 
     /**
@@ -132,7 +132,7 @@ public class UserController {
      */
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
-        ThrowUtils.throwIf(!userService.isAdmin(request), ErrorCode.NO_AUTH_ERROR);
+        ThrowUtils.throwIf(userService.isAdmin(request), ErrorCode.NO_AUTH_ERROR);
         ThrowUtils.throwIf(deleteRequest == null || deleteRequest.getId() <= 0, ErrorCode.PARAMS_ERROR, "参数不能为空");
         return ResultUtils.success(userService.removeById(deleteRequest.getId()));
     }
@@ -147,8 +147,8 @@ public class UserController {
     @PostMapping("/update")
     public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest, HttpServletRequest request) {
         ThrowUtils.throwIf(userUpdateRequest == null, ErrorCode.PARAMS_ERROR);
-        ThrowUtils.throwIf(userUpdateRequest.getId() <= 0, ErrorCode.PARAMS_ERROR);
-        ThrowUtils.throwIf(!userService.isAdmin(request), ErrorCode.NO_AUTH_ERROR);
+        ThrowUtils.throwIf(userUpdateRequest.getUserId() <= 0, ErrorCode.PARAMS_ERROR);
+        ThrowUtils.throwIf(userService.isAdmin(request), ErrorCode.NO_AUTH_ERROR);
         User user = new User();
         BeanUtils.copyProperties(userUpdateRequest, user);
         boolean result = userService.updateById(user);
@@ -166,7 +166,7 @@ public class UserController {
     @GetMapping("/get")
     public BaseResponse<User> getUserById(long id, HttpServletRequest request) {
         ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
-        ThrowUtils.throwIf(!userService.isAdmin(request), ErrorCode.NO_AUTH_ERROR);
+        ThrowUtils.throwIf(userService.isAdmin(request), ErrorCode.NO_AUTH_ERROR);
         User user = userService.getById(id);
         ThrowUtils.throwIf(user == null, ErrorCode.NOT_FOUND_ERROR);
         return ResultUtils.success(user);
@@ -195,7 +195,7 @@ public class UserController {
      */
     @PostMapping("/list/page")
     public BaseResponse<Page<User>> listUserByPage(@RequestBody UserQueryRequest userQueryRequest, HttpServletRequest request) {
-        ThrowUtils.throwIf(!userService.isAdmin(request), ErrorCode.NO_AUTH_ERROR);
+        ThrowUtils.throwIf(userService.isAdmin(request), ErrorCode.NO_AUTH_ERROR);
         long current = userQueryRequest.getCurrent();
         long size = userQueryRequest.getPageSize();
         Page<User> userPage = userService.page(new Page<>(current, size), userService.getQueryWrapper(userQueryRequest));
@@ -214,7 +214,7 @@ public class UserController {
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        ThrowUtils.throwIf(!userService.isAdmin(request), ErrorCode.NO_AUTH_ERROR);
+        ThrowUtils.throwIf(userService.isAdmin(request), ErrorCode.NO_AUTH_ERROR);
         long current = userQueryRequest.getCurrent();
         long size = userQueryRequest.getPageSize();
         // 限制爬虫
@@ -241,11 +241,11 @@ public class UserController {
         UserVO loginUser = userService.getLoginUser(request);
         User user = new User();
         BeanUtils.copyProperties(userUpdateMyRequest, user);
-        user.setId(loginUser.getId());
-        String userPassword = user.getUserpassword();
+        user.setUserId(loginUser.getUserId());
+        String userPassword = user.getUserPassword();
         if (userPassword != null) {
             String encryptPassword = DigestUtils.md5DigestAsHex((UserConstant.SALT + userPassword).getBytes());
-            user.setUserpassword(encryptPassword);
+            user.setUserPassword(encryptPassword);
         }
         boolean result = userService.updateById(user);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
