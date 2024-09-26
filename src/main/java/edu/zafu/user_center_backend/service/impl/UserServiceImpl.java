@@ -52,7 +52,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         synchronized (userAccount.intern()) {
             // 账户不能重复
             QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("userAccount", userAccount);
+            queryWrapper.eq("user_account", userAccount);
             long count = this.baseMapper.selectCount(queryWrapper);
             ThrowUtils.throwIf(count > 0, ErrorCode.PARAMS_ERROR, "账号重复");
             // 用户密码加密
@@ -85,8 +85,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String encryptPassword = DigestUtils.md5DigestAsHex((UserConstant.SALT + userPassword).getBytes());
         // 查询用户是否存在
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userAccount", userAccount);
-        queryWrapper.eq("userPassword", encryptPassword);
+        queryWrapper.eq("user_account", userAccount);
+        queryWrapper.eq("user_password", encryptPassword);
         User user = this.baseMapper.selectOne(queryWrapper);
         ThrowUtils.throwIf(user == null, ErrorCode.SYSTEM_ERROR, "用户不存在或密码错误");
         // 用户被禁用
@@ -124,7 +124,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return null;
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", userVO.getUserId());
+        queryWrapper.eq("user_id", userVO.getUserId());
         User user = this.baseMapper.selectOne(queryWrapper);
         return this.getUserVO(user);
     }
@@ -176,9 +176,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest) {
         ThrowUtils.throwIf(userQueryRequest == null, ErrorCode.PARAMS_ERROR, "参数为空");
         Long id = userQueryRequest.getUserId();
-        String username = userQueryRequest.getUserNickname();
-        String useraccount = userQueryRequest.getUserAccount();
-        Integer userstatus = userQueryRequest.getUserRole();
+        String userNickname = userQueryRequest.getUserNickname();
+        String userAccount = userQueryRequest.getUserAccount();
+        Integer userRole = userQueryRequest.getUserRole();
         String userprofile = userQueryRequest.getUserProfile();
         int current = userQueryRequest.getCurrent();
         int pageSize = userQueryRequest.getPageSize();
@@ -187,19 +187,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 构造查询条件
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         if (id != null) {
-            queryWrapper.eq("id", id);
+            queryWrapper.eq("user_id", id);
         }
-        if (StringUtils.isNotBlank(username)) {
-            queryWrapper.like("username", username);
+        if (StringUtils.isNotBlank(userNickname)) {
+            queryWrapper.like("user_nickname", userNickname);
         }
-        if (StringUtils.isNotBlank(useraccount)) {
-            queryWrapper.like("useraccount", useraccount);
+        if (StringUtils.isNotBlank(userAccount)) {
+            queryWrapper.like("user_account", userAccount);
         }
-        if (userstatus != null) {
-            queryWrapper.eq("userstatus", userstatus);
+        if (userRole != null) {
+            queryWrapper.eq("user_role", userRole);
         }
         if (StringUtils.isNotBlank(userprofile)) {
-            queryWrapper.like("userprofile", userprofile);
+            queryWrapper.like("user_profile", userprofile);
         }
         // 排序
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
