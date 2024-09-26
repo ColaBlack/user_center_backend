@@ -25,5 +25,5 @@ public interface UserConstant {
     /**
      * 最小密码长度
      */
-    Integer MIN_PASSWORD_LENGTH = 16;
+    Integer MIN_PASSWORD_LENGTH = 6;
 }
