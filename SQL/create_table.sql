@@ -6,7 +6,7 @@ USE user_center;
 CREATE TABLE IF NOT EXISTS user
 (
     user_id       BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_nickname VARCHAR(256) DEFAULT '快来设置昵称吧'  NULL COMMENT '用户昵称',
+    user_name VARCHAR(256) DEFAULT '快来设置昵称吧' NULL COMMENT '用户昵称',
     user_account  VARCHAR(256)                           NULL COMMENT '用户账号',
     user_avatar   VARCHAR(1024)                          NULL COMMENT '用户头像',
     user_password VARCHAR(512)                           NOT NULL COMMENT '密码',

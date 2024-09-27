@@ -176,7 +176,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest) {
         ThrowUtils.throwIf(userQueryRequest == null, ErrorCode.PARAMS_ERROR, "参数为空");
         Long id = userQueryRequest.getUserId();
-        String userNickname = userQueryRequest.getUserNickname();
+        String userName = userQueryRequest.getUserName();
         String userAccount = userQueryRequest.getUserAccount();
         Integer userRole = userQueryRequest.getUserRole();
         String userprofile = userQueryRequest.getUserProfile();
@@ -189,8 +189,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (id != null) {
             queryWrapper.eq("user_id", id);
         }
-        if (StringUtils.isNotBlank(userNickname)) {
-            queryWrapper.like("user_nickname", userNickname);
+        if (StringUtils.isNotBlank(userName)) {
+            queryWrapper.like("user_name", userName);
         }
         if (StringUtils.isNotBlank(userAccount)) {
             queryWrapper.like("user_account", userAccount);

@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="edu.zafu.user_center_backend.model.PO.User">
         <id property="userId" column="user_id" jdbcType="BIGINT"/>
-        <result property="userNickname" column="user_nickname" jdbcType="VARCHAR"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
         <result property="userAccount" column="user_account" jdbcType="VARCHAR"/>
         <result property="userAvatar" column="user_avatar" jdbcType="VARCHAR"/>
         <result property="userPassword" column="user_password" jdbcType="VARCHAR"/>
@@ -18,7 +18,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        user_id,user_nickname,user_account,
+        user_id,user_name,user_account,
         user_avatar,user_password,user_role,
         create_time,update_time,is_delete,
         user_profile
