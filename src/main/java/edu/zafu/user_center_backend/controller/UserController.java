@@ -27,6 +27,7 @@ import java.util.List;
  *
  * @author ColaBlack
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/user")
 @Slf4j
