@@ -1,5 +1,6 @@
 package edu.zafu.user_center_backend.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import edu.zafu.user_center_backend.common.BaseResponse;
 import edu.zafu.user_center_backend.common.DeleteRequest;
@@ -94,9 +95,6 @@ public class UserController {
      */
     @GetMapping("/get/login")
     public BaseResponse<UserVO> getLoginUser(HttpServletRequest request) {
-//        if (request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE) == null) {
-//            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
-//        }
         return ResultUtils.success(userService.getLoginUser(request));
     }
 
@@ -201,7 +199,18 @@ public class UserController {
         ThrowUtils.throwIf(userService.isAdmin(request), ErrorCode.NO_AUTH_ERROR);
         long current = userQueryRequest.getCurrent();
         long size = userQueryRequest.getPageSize();
-        Page<User> userPage = userService.page(new Page<>(current, size), userService.getQueryWrapper(userQueryRequest));
+        Long userId = userQueryRequest.getUserId();
+        String userName = userQueryRequest.getUserName();
+        String userAccount = userQueryRequest.getUserAccount();
+        Integer userRole = userQueryRequest.getUserRole();
+        String userProfile = userQueryRequest.getUserProfile();
+        if (userId == null && userName == null && userAccount == null && userRole == null && userProfile == null) {
+            Page<User> userPage = userService.page(new Page<>(current, size), new QueryWrapper<>());
+            return ResultUtils.success(userPage);
+        }
+
+        QueryWrapper<User> queryWrapper = userService.getQueryWrapper(userQueryRequest);
+        Page<User> userPage = userService.page(new Page<>(current, size), queryWrapper);
         return ResultUtils.success(userPage);
     }
 
