@@ -27,7 +27,6 @@ import java.util.List;
  *
  * @author ColaBlack
  */
-@CrossOrigin
 @RestController
 @RequestMapping("/user")
 @Slf4j
@@ -95,6 +94,9 @@ public class UserController {
      */
     @GetMapping("/get/login")
     public BaseResponse<UserVO> getLoginUser(HttpServletRequest request) {
+//        if (request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE) == null) {
+//            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+//        }
         return ResultUtils.success(userService.getLoginUser(request));
     }
 
